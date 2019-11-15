@@ -1,5 +1,5 @@
 # warehouse3d
- 该项目使用 [three.js](https://github.com/mrdoob/three.js) 完成仓库的三维图形建模，同时使用[three-orbitcontrols](https://github.com/fibo/three-orbitcontrols) 完成三维视图的控制（旋转，拉伸，收缩等操作）。
+ 该项目使用 [three.js](https://github.com/mrdoob/three.js) 完成仓库的三维图形建模，同时使用 [three-orbitcontrols](https://github.com/fibo/three-orbitcontrols) 完成三维视图的控制（旋转，拉伸，收缩等操作）。
 
 ## 安装
 ```
