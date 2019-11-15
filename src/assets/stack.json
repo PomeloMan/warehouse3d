@@ -1,0 +1,22 @@
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [ 20, 20 ],
+        [ 40, 20 ],
+        [ 40, 40 ],
+        [ 20, 40 ],
+        [ 20, 20 ]
+      ]
+    ]
+  },
+  "properties": {
+    "id": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+    "type": "stack",
+    "level": 1,
+    "levelId": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+    "height": 15
+  }
+}

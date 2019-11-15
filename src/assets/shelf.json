@@ -1,0 +1,21 @@
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [ 10, 10 ],
+        [ 50, 10 ],
+        [ 50, 630 ],
+        [ 10, 630 ],
+        [ 10, 10 ]
+      ]
+    ]
+  },
+  "properties": {
+    "id": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+    "type": "shelf",
+    "levels": 5,
+    "height": [20, 20, 40, 20, 40]
+  }
+}

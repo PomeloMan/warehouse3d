@@ -1,0 +1,38 @@
+{
+  "name": "warehouse3d",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "build": "webpack --mode production --config webpack.config.prod.js",
+    "serve": "webpack-dev-server --open --inline --hot --mode development --config ./webpack.config.dev.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/stats.js": "^0.17.0",
+    "@types/three": "^0.103.2",
+    "babel-minify-webpack-plugin": "^0.3.1",
+    "clean-webpack-plugin": "^3.0.0",
+    "css-loader": "^3.2.0",
+    "html-webpack-plugin": "^3.2.0",
+    "mini-css-extract-plugin": "^0.8.0",
+    "node-sass": "^4.13.0",
+    "optimize-css-assets-webpack-plugin": "^5.0.3",
+    "sass-loader": "^8.0.0",
+    "style-loader": "^1.0.0",
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.7.2",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.9.0",
+    "webpack-merge": "^4.2.2"
+  },
+  "dependencies": {
+    "lodash": "^4.17.15",
+    "stats.js": "^0.17.0",
+    "three": "^0.110.0",
+    "three-orbitcontrols": "^2.110.1"
+  }
+}

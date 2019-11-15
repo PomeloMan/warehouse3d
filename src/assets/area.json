@@ -1,0 +1,289 @@
+{
+  "type": "FeatureCollection",
+  "features": [{
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 10, 10 ],
+          [ 120, 10 ],
+          [ 120, 90 ],
+          [ 10, 90 ],
+          [ 10, 10 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+      "type": "area",
+      "height": 100,
+      "name": "IT机房",
+      "color": "#818181"
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 10, 90 ],
+          [ 50, 90 ],
+          [ 50, 550 ],
+          [ 125, 550 ],
+          [ 125, 640 ],
+          [ 10, 640 ],
+          [ 10, 90 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+      "type": "area",
+      "height": 20,
+      "name": "车间通道",
+      "color": "#C9C9C9"
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 50, 90 ],
+          [ 110, 90 ],
+          [ 110, 310 ],
+          [ 50, 310 ],
+          [ 50, 90 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+      "type": "area",
+      "height": 20,
+      "name": "QC留样",
+      "color": "#A4A4A4"
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 125, 550 ],
+          [ 250, 550 ],
+          [ 250, 640 ],
+          [ 125, 640 ],
+          [ 125, 550 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+      "type": "area",
+      "height": 20,
+      "name": "坦克大料  大料零头",
+      "color": "#FBD9C5"
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 250, 10 ],
+          [ 370, 10 ],
+          [ 370, 42 ],
+          [ 250, 42 ],
+          [ 250, 10 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+      "type": "area",
+      "height": 100,
+      "name": "办公室",
+      "color": "#CFE3F4"
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 250, 590 ],
+          [ 380, 590 ],
+          [ 380, 640 ],
+          [ 250, 640 ],
+          [ 250, 590 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+      "type": "area",
+      "height": 20,
+      "name": "回用料",
+      "color": "#FBD9C5"
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 415, 590 ],
+          [ 490, 590 ],
+          [ 490, 640 ],
+          [ 415, 640 ],
+          [ 415, 590 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+      "type": "area",
+      "height": 20,
+      "name": "盖子",
+      "color": "#FBD9C5"
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 490, 10 ],
+          [ 550, 10 ],
+          [ 550, 42 ],
+          [ 490, 42 ],
+          [ 490, 10 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+      "type": "area",
+      "height": 100,
+      "name": "",
+      "color": "#CFE3F4"
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 490, 590 ],
+          [ 670, 590 ],
+          [ 670, 640 ],
+          [ 490, 640 ],
+          [ 490, 590 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+      "type": "area",
+      "height": 20,
+      "name": "盖子拆包区",
+      "color": "#FBD9C5"
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 700, 520 ],
+          [ 780, 520 ],
+          [ 780, 480 ],
+          [ 840, 480 ],
+          [ 840, 150 ],
+          [ 900, 150 ],
+          [ 900, 590 ],
+          [ 840, 590 ],
+          [ 840, 640 ],
+          [ 700, 640 ],
+          [ 700, 520 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+      "type": "area",
+      "height": 20,
+      "name": "大料AGV区域",
+      "color": "#AED494"
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 840, 80 ],
+          [ 970, 80 ],
+          [ 970, 640 ],
+          [ 840, 640 ],
+          [ 840, 590 ],
+          [ 900, 590 ],
+          [ 900, 150 ],
+          [ 840, 150 ],
+          [ 840, 80 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+      "type": "area",
+      "height": 20,
+      "name": "预配区",
+      "color": "#F5B58B"
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 780, 480 ],
+          [ 840, 480 ],
+          [ 840, 420 ],
+          [ 780, 420 ],
+          [ 780, 480 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+      "type": "area",
+      "height": 20,
+      "name": "危化品",
+      "color": "#FFA500"
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 880, 10 ],
+          [ 940, 10 ],
+          [ 940, 30 ],
+          [ 880, 30 ],
+          [ 880, 10 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+      "type": "area",
+      "height": 20,
+      "name": "充电区",
+      "color": "#FFA500"
+    }
+  }]
+}
