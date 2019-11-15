@@ -10,7 +10,7 @@ npm install
 npm run serve
 ```
 ## 建模
-1. 数据格式参照 [GeoJson](https://geojson.org/)
+1. 数据格式参照 [GeoJson](https://geojson.org/), 测试数据格式参考 [http://geojson.io/](http://geojson.io/)
    ```
    {
      "type": "Feature",
