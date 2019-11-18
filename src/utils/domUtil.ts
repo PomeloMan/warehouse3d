@@ -41,19 +41,31 @@ export class DomUtil {
   }
 
   /**
-   * 
-   * @param text 
+   * 绘制文本
+   * @param text 文本内容
+   * @param backgroundColor 画布背景色,默认:rgba(255,255,255,0)
+   * @param color 文字颜色,默认:rgba(0,0,0,1)
+   * @param width 画布长,默认64
+   * @param height 画布宽,默认64
+   * @param fontSize 字体大小,默认12
    */
-  static createTextCanvas(text: string, width: number = 64, height: number = 64) {
+  static createTextCanvas(
+    text: string,
+    backgroundColor = 'rgba(255, 255, 255, 0)',
+    color = 'rgba(0, 0, 0, 1)',
+    width: number = 64,
+    height: number = 64,
+    fontSize = 12
+  ) {
     let canvas = document.createElement('canvas');
     canvas.width = width;
     canvas.height = height;
     let ctx = canvas.getContext('2d');
     if (ctx) {
-      ctx.fillStyle = 'rgba(170, 92, 64, 0.7)';
+      ctx.fillStyle = backgroundColor;
       ctx.fillRect(0, 0, width, height);
-      ctx.font = 12 + 'px " bold';
-      ctx.fillStyle = '#fff';
+      ctx.font = fontSize + 'px " bold';
+      ctx.fillStyle = color;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       // ctx.fillText(text, width / 2, height / 2);

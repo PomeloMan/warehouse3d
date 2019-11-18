@@ -14,10 +14,13 @@ export class Feature implements GeoJson {
 
 export class Properties {
   id?: any;
+  name?: string;
   type?: any;
   color?: any;
   levels?: number;
   height?: number | Array<number>;
   width?: number;
   direction?: 'vertical' | 'horizontal';
+  shelfId?: any;
+  shelfLevel?: number;
 }

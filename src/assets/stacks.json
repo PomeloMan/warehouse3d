@@ -1,0 +1,67 @@
+{
+  "type": "FeatureCollection",
+  "features": [{
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 130, 20 ],
+          [ 160, 20 ],
+          [ 160, 40 ],
+          [ 130, 40 ],
+          [ 130, 20 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+      "type": "stack",
+      "shelfId": "13",
+      "shelfLevel": 1,
+      "height": 15
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 130, 20 ],
+          [ 160, 20 ],
+          [ 160, 40 ],
+          [ 130, 40 ],
+          [ 130, 20 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+      "type": "stack",
+      "shelfId": "13",
+      "shelfLevel": 2,
+      "height": 15
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 130, 20 ],
+          [ 160, 20 ],
+          [ 160, 40 ],
+          [ 130, 40 ],
+          [ 130, 20 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+      "type": "stack",
+      "shelfId": "13",
+      "shelfLevel": 3,
+      "height": 15
+    }
+  }]
+}

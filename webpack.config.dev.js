@@ -1,8 +1,14 @@
 const path = require('path');
 const merge = require('webpack-merge');
 const common = require('./webpack.config.js');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = merge(common, {
+  output: {
+    filename: 'js/warehouse.js',
+    chunkFilename: '[chunkhash].js',
+    path: path.resolve(__dirname, 'dist')
+  },
   mode: 'development',
   devtool: 'eval-source-map',
   devServer: {
@@ -12,12 +18,7 @@ module.exports = merge(common, {
     inline: true,
     hot: true
   },
-  module: {
-    rules: [
-      {
-        test: /\.(css|sass|scss)$/,
-        loader: 'style-loader!css-loader!sass-loader'
-      }
-    ]
-  }
+  plugins: [
+    new CleanWebpackPlugin()
+  ]
 });

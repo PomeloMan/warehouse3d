@@ -4,19 +4,19 @@
     "type": "Polygon",
     "coordinates": [
       [
-        [ 20, 20 ],
-        [ 40, 20 ],
-        [ 40, 40 ],
-        [ 20, 40 ],
-        [ 20, 20 ]
+        [ 130, 20 ],
+        [ 160, 20 ],
+        [ 160, 40 ],
+        [ 130, 40 ],
+        [ 130, 20 ]
       ]
     ]
   },
   "properties": {
     "id": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
     "type": "stack",
-    "level": 1,
-    "levelId": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+    "shelfId": "13",
+    "shelfLevel": 1,
     "height": 15
   }
 }

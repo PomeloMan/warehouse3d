@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
+    "dev": "webpack --mode development --config webpack.config.dev.js",
     "build": "webpack --mode production --config webpack.config.prod.js",
     "serve": "webpack-dev-server --open --inline --hot --mode development --config ./webpack.config.dev.js"
   },
@@ -15,8 +16,10 @@
     "@types/three": "^0.103.2",
     "babel-minify-webpack-plugin": "^0.3.1",
     "clean-webpack-plugin": "^3.0.0",
+    "copy-webpack-plugin": "^5.0.5",
     "css-loader": "^3.2.0",
     "html-webpack-plugin": "^3.2.0",
+    "json-loader": "^0.5.7",
     "mini-css-extract-plugin": "^0.8.0",
     "node-sass": "^4.13.0",
     "optimize-css-assets-webpack-plugin": "^5.0.3",

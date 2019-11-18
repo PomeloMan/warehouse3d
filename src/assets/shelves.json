@@ -19,7 +19,7 @@
       "type": "shelf",
       "levels": 5,
       "width": 30,
-      "height": [20, 20, 20, 20, 20]
+      "height": 20
     }
   }, {
     "type": "Feature",

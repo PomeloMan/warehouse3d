@@ -2,6 +2,7 @@
  * 货架对象
  */
 export class Shelf {
+  id: any; // 货架编号
   levels: number = 5; // 货架一共有几层。默认5层
   width: number = 15; // 货架x轴长度。默认15
   height: number | Array<number> = 20; // 货架每层的高度。默认20

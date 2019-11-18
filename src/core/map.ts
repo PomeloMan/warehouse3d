@@ -12,6 +12,10 @@ import { Stack } from './modal/stack';
 import { Area } from './modal/area';
 import { DrawUtil } from '../utils/drawUtil';
 
+// const area = require('../assets/area.json');
+// const shelf = require('../assets/shelf.json');
+// const stack = require('../assets/stack.json');
+
 export class Map {
 
   scene: THREE.Scene; // 3d地图渲染场景
@@ -37,6 +41,14 @@ export class Map {
    * 绘制内容的 Canvas 元素
    */
   private canvasElement: HTMLCanvasElement;
+  /**
+   * 地面高度
+   */
+  private groundDepth: number = 2;
+  /**
+   * 货架层面高度
+   */
+  private levelSurfaceDepth: number = 1;
 
   constructor(options?: MapOptions) {
     if (!Detector.webgl) {
@@ -117,14 +129,20 @@ export class Map {
    * 创建模型
    */
   createObjects() {
-    var loader = new THREE.FileLoader();
     this.drawGround(960, 630, { x: 10, y: 10 });
-    // this.drawStacks();
-    loader.load('assets/shelves.json', (geojson: string) => {
-      this.drawShelf(JSON.parse(geojson));
-    })
+    // this.drawArea(area);
+    // this.drawShelf(shelf);
+    // this.drawStack(stack);
+    var loader = new THREE.FileLoader();
     loader.load('assets/area.json', (geojson: string) => {
       this.drawArea(JSON.parse(geojson));
+    })
+    loader.load('assets/shelves.json', (geojson: string) => {
+      this.drawShelf(JSON.parse(geojson));
+
+      loader.load('assets/stacks.json', (geojson: string) => {
+        this.drawStack(JSON.parse(geojson));
+      })
     })
   }
 
@@ -151,7 +169,7 @@ export class Map {
     // https://threejs.org/docs/#api/en/geometries/ExtrudeGeometry
     let extrudeSettings = { // 矩形
       steps: 1,
-      depth: 2,
+      depth: this.groundDepth,
       bevelEnabled: false
     };
     this.groundXYZ = {
@@ -179,6 +197,12 @@ export class Map {
     if (geojson.type === 'Feature') {
       const feature: Feature = geojson;
       if (feature && feature.properties && feature.properties.type === 'shelf') {
+        shelf.id = feature.properties.id || shelf.id;
+        shelf.height = feature.properties.height || shelf.height;
+        shelf.width = feature.properties.width || shelf.width;
+        shelf.levels = feature.properties.levels || shelf.levels;
+        shelf.direction = feature.properties.direction || shelf.direction;
+
         const geometry = feature.geometry;
         if (geometry && geometry.type === 'Polygon') {
           const polygon: Polygon = feature.geometry;
@@ -190,11 +214,6 @@ export class Map {
             });
           })
           let shape = new THREE.Shape(shelf.vectors);
-
-          shelf.height = feature.properties.height || shelf.height;
-          shelf.width = feature.properties.width || shelf.width;
-          shelf.levels = feature.properties.levels || shelf.levels;
-          shelf.direction = feature.properties.direction || shelf.direction;
 
           this.drawShelfLevels(shape, shelf);
         }
@@ -212,7 +231,6 @@ export class Map {
    */
   drawShelfLevels(shape, shelf) {
     let heightArr = [];
-    const depth = 1; // 层面高度
     if (shelf.height instanceof Array) {
       heightArr = shelf.height;
     } else {
@@ -225,13 +243,14 @@ export class Map {
     shelfLevelGroup.userData = {
       type: 'Shelf',
       color: '#fff',
-      opacity: 1
+      opacity: 1,
+      ...shelf
     }
     for (let index = 0; index < shelf.levels; index++) {
       const levelGroup = new THREE.Group();
       // 绘制货架每层上下方的面
       let levelGeo = new THREE.ExtrudeGeometry(shape, {
-        depth: depth,
+        depth: this.levelSurfaceDepth,
         bevelEnabled: false
       });
       let levelMat = new THREE.MeshLambertMaterial({ color: 0xffffff, opacity: 1, transparent: true });
@@ -244,7 +263,7 @@ export class Map {
 
       let levelTopMesh = new THREE.Mesh(levelGeo, levelMat);
       levelTopMesh.userData.opacity = 1;
-      levelTopMesh.position.set(0, currentHeight - depth, 0);
+      levelTopMesh.position.set(0, currentHeight - this.levelSurfaceDepth, 0);
 
       levelBotMesh.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
       levelTopMesh.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
@@ -299,7 +318,9 @@ export class Map {
       levelGroup.userData = {
         type: 'ShelfLevel',
         color: '#fff',
-        opacity: 1
+        opacity: 1,
+        coordinate: { y: currentHeight },
+        level: index + 1 // 从 1 开始
       };
 
       shelfLevelGroup.add(levelGroup);
@@ -309,24 +330,20 @@ export class Map {
 
   /**
    * 绘制库位
-   */
-  drawStacks() {
-    var loader = new THREE.FileLoader();
-    loader.load('assets/stack.json', (geojson: string) => {
-      this.drawStack(JSON.parse(geojson));
-    })
-  }
-
-  /**
-   * 绘制单个库位
    * @param geojson
    */
   drawStack(geojson: GeoJson) {
     this.reDraw();
-    let stack = {} as Stack;
+    let stack = new Stack();
     if (geojson.type === 'Feature') {
       const feature: Feature = geojson;
       if (feature && feature.properties && feature.properties.type === 'stack') {
+        const height: any = feature.properties.height;
+        stack.id = feature.properties.id || stack.id;
+        stack.height = height || stack.height;
+        stack.shelfId = feature.properties.shelfId || stack.shelfId;
+        stack.shelfLevel = feature.properties.shelfLevel || stack.shelfLevel;
+
         const geometry = feature.geometry;
         const depth: any = feature.properties.height || 10;
         if (geometry && geometry.type === 'Polygon') {
@@ -343,11 +360,35 @@ export class Map {
             depth: depth,
             bevelEnabled: false
           });
-          let stackMat = new THREE.MeshLambertMaterial({ color: 'red', opacity: 0.5, transparent: true });
+          let stackMat = new THREE.MeshLambertMaterial({ color: 'red', opacity: 0.7, transparent: true });
+
+          // 找到指定货架
+          const shelf = this.target(stack.shelfId, 'Shelf');
+          let currentHeight = 0;
+          if (shelf.userData.height instanceof Array) {
+            currentHeight += this.levelSurfaceDepth;
+            for (let index = 1; index < stack.shelfLevel; index++) {
+              currentHeight += shelf.userData.height[index - 1];
+            }
+          } else {
+            currentHeight += this.levelSurfaceDepth;
+            for (let index = 1; index < stack.shelfLevel; index++) {
+              currentHeight += shelf.userData.height;
+            }
+          }
+          // 设置该库位对应货架的 y 轴位置（由货架每层高度计算得出）
+          const y = this.groundDepth + currentHeight;
 
           let stackMesh = new THREE.Mesh(stackGeo, stackMat);
-          stackMesh.position.set(0, 2, 0);
+          stackMesh.position.set(0, y, 0);
           stackMesh.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
+
+          stackMesh.userData = {
+            type: 'Stack',
+            color: 'red',
+            opacity: 0.7,
+            ...stack
+          };
 
           this.scene.add(stackMesh);
         }
@@ -355,7 +396,7 @@ export class Map {
     } else if (geojson.type === 'FeatureCollection') {
       const collection: FeatureCollection = geojson;
       collection.features.forEach(feature => {
-        this.drawShelf(feature)
+        this.drawStack(feature)
       })
     }
   }
@@ -369,6 +410,8 @@ export class Map {
     if (geojson.type === 'Feature') {
       const feature: Feature = geojson;
       if (feature && feature.properties && feature.properties.type === 'area') {
+        area = { ...area, ...feature.properties };
+
         const geometry = feature.geometry;
         const depth: any = feature.properties.height || 10;
         if (geometry && geometry.type === 'Polygon') {
@@ -397,7 +440,11 @@ export class Map {
           areaMesh.position.set(0, 2, 0);
           areaMesh.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
 
-          areaMesh.userData.type = 'area';
+          areaMesh.userData = {
+            type: 'Area',
+            opacity: 0.7,
+            ...area
+          };
 
           this.scene.add(areaMesh);
         }
@@ -466,68 +513,154 @@ export class Map {
 
     // 有可选中的obj
     if (intersects.length > 0) {
-      this.scene.children.forEach((obj: any) => {
-        this.fadeOut(obj);
-      });
+      this.fadeOutAll();
       for (var i = 0; i < intersects.length; i++) {
-        let selectedObj = intersects[i].object;
+        let selectedObj: any = intersects[i].object;
         if (selectedObj.userData.type === 'area') {
-          // continue;
-        }
-        if (!(selectedObj.parent instanceof THREE.Scene)) {
-          selectedObj = selectedObj.parent;
-        }
-        if (selectedObj instanceof THREE.Mesh) {
+          this.fadeInAll();
           // 恢复为以前的颜色
           if (this.selectedMesh) {
             this.reset(this.selectedMesh);
-          }
-          this.selectedMesh = selectedObj as THREE.Mesh;
-          // 存储当前颜色
-          this.selectedMesh.currentHex = this.selectedMesh.material.color.getHex();
-          // 设置新的选中颜色
-          this.selectedMesh.material.color = new THREE.Color(this.selectedColor);
-          this.selectedMesh.material.opacity = 0.7;
-          // 设置选中后显示模型名称
-          // 计算模型的uv坐标供材质贴图使用
-          // DrawUtil.assignUVs(this.selectedMesh.geometry);
-          // this.selectedMesh.material.map = new THREE.CanvasTexture(DomUtil.createTextCanvas(this.selectedMesh.userData.type));
-
-          if (this.selectionListener) {
-            this.selectionListener(this.selectedMesh.id); //notify the listener
-          }
-          break;
-        } else if (selectedObj instanceof THREE.Group) {
-          // 恢复为以前的颜色
-          if (this.selectedMesh === selectedObj) {
-            this.scene.children.forEach((obj: any) => {
-              this.fadeIn(obj);
-            });
-            this.reset(this.selectedMesh);
             this.selectedMesh = null;
-            return;
-          }
-          this.selectedMesh = selectedObj;
-
-          if (this.selectedMesh.parent && this.selectedMesh.parent.userData.type === 'Shelf') {
-            this.reset(this.selectedMesh.parent);
           }
 
-          this.selectedMesh.children.forEach(mesh => {
-            mesh.material.color = new THREE.Color(this.selectedColor);
-            mesh.material.opacity = 0.7;
-          });
-          break;
+          this.handleAreaObj(selectedObj);
+          break; // 只处理数组第一个即最近的一个模型
+          // continue;
         }
+        this.handleSelectedObj(intersects[i].object);
+        break; // 只处理数组第一个即最近的一个模型
       }
     }
   }
 
   /**
-   * 将模型还原
+   * 处理 Area
+   */
+  handleAreaObj(selectedObj) {
+    if (!!selectedObj.userData.showName) { // 隐藏名称
+      selectedObj.userData.showName = false;
+      this.scene.remove(selectedObj.userData.nameMesh);
+    } else { // 显示名称
+      const size = 100;
+      // 计算最大最小
+      selectedObj.geometry.computeBoundingBox();
+      var box = selectedObj.geometry.boundingBox;
+      var vertices = [];
+      vertices.push((box.max.x - box.min.x) / 2 + box.min.x, (box.max.y - box.min.y) / 2 + box.min.y, (box.max.z - box.min.z));
+      var geometry = new THREE.BufferGeometry();
+      geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+      var material = new THREE.PointsMaterial({
+        size: size,
+        map: new THREE.CanvasTexture(DomUtil.createTextCanvas(selectedObj.userData.name)),
+        // blending: THREE.AdditiveBlending,
+        depthTest: false,
+        transparent: true
+      });
+      var points = new THREE.Points(geometry, material);
+      points.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
+      this.scene.add(points);
+      selectedObj.userData.showName = true;
+      selectedObj.userData.nameMesh = points;
+    }
+  }
+
+  /**
+   * 处理选中模型
+   */
+  handleSelectedObj(selectedObj) {
+    // 如果 selectedObj 父对象不是 THREE.Scene，则获取其父对象进行操作，一般为 THREE.Group
+    if (!(selectedObj.parent instanceof THREE.Scene)) {
+      selectedObj = selectedObj.parent;
+    }
+
+    // 恢复为以前的颜色
+    if (this.selectedMesh === selectedObj) {
+      this.fadeInAll();
+      this.reset(this.selectedMesh);
+      this.selectedMesh = null;
+      return;
+    }
+
+    // 之前选中模型恢复为原始状态
+    if (this.selectedMesh) {
+      this.reset(this.selectedMesh, 'color');
+      this.selectedMesh = null;
+    }
+
+    if (selectedObj instanceof THREE.Mesh) {
+      this.selectedMesh = selectedObj as THREE.Mesh;
+      // 存储当前颜色
+      this.selectedMesh.currentHex = this.selectedMesh.material.color.getHex();
+      // 设置新的选中颜色
+      this.selectedMesh.material.color = new THREE.Color(this.selectedColor);
+      this.selectedMesh.material.opacity = 0.7;
+      // 设置选中后显示模型名称
+      // 计算模型的uv坐标供材质贴图使用
+      // DrawUtil.assignUVs(this.selectedMesh.geometry);
+      // this.selectedMesh.material.map = new THREE.CanvasTexture(DomUtil.createTextCanvas(this.selectedMesh.userData.type));
+
+      // 如果选中模型是库位，则找到库位相关的货架及层位，还原对应层位的状态
+      if (this.selectedMesh.userData.type === 'Stack') {
+        let shelfMesh = this.selectedMesh.userData.shelfMesh;
+        if (!shelfMesh) {
+          shelfMesh = this.scene.children.find(obj =>
+            obj.userData && obj.userData.type === 'Shelf' && obj.userData.id === this.selectedMesh.userData.shelfId
+          )
+          this.selectedMesh.userData.shelfMesh = shelfMesh;
+        }
+        this.reset(shelfMesh.children[this.selectedMesh.userData.shelfLevel - 1]);
+      }
+
+      if (this.selectionListener) {
+        this.selectionListener(this.selectedMesh.id); //notify the listener
+      }
+    } else if (selectedObj instanceof THREE.Group) {
+      this.selectedMesh = selectedObj;
+
+      // 如果选中模型的父模型的类型是货架，则重置货架所有子模型
+      if (this.selectedMesh.parent && this.selectedMesh.parent.userData.type === 'Shelf') {
+        this.reset(this.selectedMesh.parent);
+        // 选中货架，还原对应货架的库位状态
+        let stackMesh = this.selectedMesh.parent.userData.stackMesh;
+        if (!stackMesh) {
+          stackMesh = this.scene.children.filter(obj =>
+            obj.userData &&
+            obj.userData.type === 'Stack' &&
+            obj.userData.shelfId === this.selectedMesh.parent.userData.id
+          )
+          this.selectedMesh.userData.stackMesh = stackMesh;
+        }
+        // 获取层位信息并还原层位状态
+        stackMesh = stackMesh.filter(obj =>
+          obj.userData.shelfLevel === this.selectedMesh.userData.level
+        );
+        this.reset(stackMesh);
+      }
+
+      // 给选中模型添加状态（选中颜色）
+      this.selectedMesh.children.forEach(mesh => {
+        mesh.material.color = new THREE.Color(this.selectedColor); // 选中颜色
+        mesh.material.opacity = mesh.userData.opacity || this.selectedMesh.userData.opacity; // 还原透明度
+      });
+    }
+  }
+
+  /**
+   * 还原场景内所有模型
+   */
+  private fadeInAll() {
+    this.scene.children.forEach(obj => {
+      this.fadeIn(obj);
+    })
+  }
+
+  /**
+   * 还原指定模型
+   * private
    * @param obj THREE.Object3D
    */
-  fadeIn(obj) {
+  private fadeIn(obj) {
     if (obj.type === 'Mesh') {
       obj.material.opacity = obj.userData.opacity || 0.7;
     } else if (obj.type === 'Group') {
@@ -538,10 +671,20 @@ export class Map {
   }
 
   /**
-   * 将模型淡出
+   * 淡出场景内所有模型
+   */
+  private fadeOutAll() {
+    this.scene.children.forEach(obj => {
+      this.fadeOut(obj);
+    })
+  }
+
+  /**
+   * 淡出模型
+   * private
    * @param obj THREE.Object3D
    */
-  fadeOut(obj) {
+  private fadeOut(obj) {
     if (obj.type === 'Mesh') {
       if (!obj.userData.opacity) {
         obj.userData.opacity = obj.material.opacity;
@@ -555,21 +698,36 @@ export class Map {
   }
 
   /**
+   * 找到指定模型
+   * @id userData.id
+   * @type userData.type
+   */
+  private target(id, type) {
+    return this.scene.children.find(obj => obj.userData.id === id && obj.userData.type === type)
+  }
+
+  /**
    * 还原模型初始状态(颜色等属性)
    * @param object3d 
    */
-  reset(object3d: any, color?: any) {
+  reset(object3d: any, type?: 'color' | 'opacity') {
     if (object3d.type === 'Mesh') {
-      if (!!color) {
-        object3d.material.color = new THREE.Color(color);
+      if (type === 'color') {
+        object3d.material.color = new THREE.Color(object3d.userData.color);
+      } else if (type === 'opacity') {
+        object3d.material.opacity = object3d.userData.opacity;
       } else {
-        object3d.material.color.setHex(object3d.currentHex);
+        object3d.material.color = new THREE.Color(object3d.userData.color);
+        object3d.material.opacity = object3d.userData.opacity;
       }
-      object3d.material.opacity = object3d.userData.opacity;
     } else if (object3d.type === 'Group') {
       for (let i = 0; i < object3d.children.length; i++) {
-        this.reset(object3d.children[i], object3d.userData.color);
+        this.reset(object3d.children[i], type);
       }
+    } else if (object3d instanceof Array) {
+      object3d.forEach(obj => {
+        this.reset(obj);
+      })
     }
   }
 
