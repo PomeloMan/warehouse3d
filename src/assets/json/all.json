@@ -1,0 +1,1109 @@
+{
+  "type": "FeatureCollection",
+  "features": [{
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 10, 10 ],
+          [ 120, 10 ],
+          [ 120, 90 ],
+          [ 10, 90 ],
+          [ 10, 10 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+      "type": "area",
+      "height": 100,
+      "name": "IT机房",
+      "color": "primary"
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 10, 90 ],
+          [ 50, 90 ],
+          [ 50, 640 ],
+          [ 10, 640 ],
+          [ 10, 90 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+      "type": "area",
+      "height": 20,
+      "name": "车间通道",
+      "color": "tertiary"
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 50, 550 ],
+          [ 125, 550 ],
+          [ 125, 640 ],
+          [ 50, 640 ],
+          [ 50, 550 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+      "type": "area",
+      "height": 20,
+      "name": "车间通道",
+      "color": "tertiary"
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 50, 90 ],
+          [ 110, 90 ],
+          [ 110, 310 ],
+          [ 50, 310 ],
+          [ 50, 90 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+      "type": "area",
+      "height": 20,
+      "name": "QC留样",
+      "color": "secondary"
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 125, 550 ],
+          [ 250, 550 ],
+          [ 250, 640 ],
+          [ 125, 640 ],
+          [ 125, 550 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+      "type": "area",
+      "height": 20,
+      "name": "坦克大料  大料零头",
+      "color": "danger"
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 250, 10 ],
+          [ 370, 10 ],
+          [ 370, 42 ],
+          [ 250, 42 ],
+          [ 250, 10 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+      "type": "area",
+      "height": 100,
+      "name": "办公室",
+      "color": "tertiary"
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 250, 590 ],
+          [ 380, 590 ],
+          [ 380, 640 ],
+          [ 250, 640 ],
+          [ 250, 590 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+      "type": "area",
+      "height": 20,
+      "name": "回用料",
+      "color": "danger"
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 415, 590 ],
+          [ 490, 590 ],
+          [ 490, 640 ],
+          [ 415, 640 ],
+          [ 415, 590 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+      "type": "area",
+      "height": 20,
+      "name": "盖子",
+      "color": "danger"
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 490, 10 ],
+          [ 550, 10 ],
+          [ 550, 42 ],
+          [ 490, 42 ],
+          [ 490, 10 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+      "type": "area",
+      "height": 100,
+      "name": "",
+      "color": "tertiary"
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 490, 590 ],
+          [ 670, 590 ],
+          [ 670, 640 ],
+          [ 490, 640 ],
+          [ 490, 590 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+      "type": "area",
+      "height": 20,
+      "name": "盖子拆包区",
+      "color": "danger"
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 700, 520 ],
+          [ 780, 520 ],
+          [ 780, 640 ],
+          [ 700, 640 ],
+          [ 700, 520 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+      "type": "area",
+      "height": 20,
+      "name": "大料AGV区域",
+      "color": "success"
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 780, 480 ],
+          [ 840, 480 ],
+          [ 840, 640 ],
+          [ 780, 640 ],
+          [ 780, 480 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+      "type": "area",
+      "height": 20,
+      "name": "大料AGV区域",
+      "color": "success"
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 840, 150 ],
+          [ 900, 150 ],
+          [ 900, 590 ],
+          [ 840, 590 ],
+          [ 840, 150 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+      "type": "area",
+      "height": 20,
+      "name": "大料AGV区域",
+      "color": "success"
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 840, 80 ],
+          [ 970, 80 ],
+          [ 970, 150 ],
+          [ 840, 150 ],
+          [ 840, 80 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+      "type": "area",
+      "height": 20,
+      "name": "预配区",
+      "color": "danger"
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 900, 150 ],
+          [ 970, 150 ],
+          [ 970, 590 ],
+          [ 900, 590 ],
+          [ 900, 150 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+      "type": "area",
+      "height": 20,
+      "name": "预配区",
+      "color": "danger"
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 840, 590 ],
+          [ 970, 590 ],
+          [ 970, 640 ],
+          [ 840, 640 ],
+          [ 840, 590 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+      "type": "area",
+      "height": 20,
+      "name": "预配区",
+      "color": "danger"
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 780, 480 ],
+          [ 840, 480 ],
+          [ 840, 420 ],
+          [ 780, 420 ],
+          [ 780, 480 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+      "type": "area",
+      "height": 20,
+      "name": "危化品",
+      "color": "warning"
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 880, 10 ],
+          [ 940, 10 ],
+          [ 940, 30 ],
+          [ 880, 30 ],
+          [ 880, 10 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+      "type": "area",
+      "height": 20,
+      "name": "充电区",
+      "color": "warning"
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 130, 10 ],
+          [ 160, 10 ],
+          [ 160, 90 ],
+          [ 130, 90 ],
+          [ 130, 10 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "13",
+      "type": "shelf",
+      "levels": 5,
+      "width": 30,
+      "height": 20
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 115, 95 ],
+          [ 130, 95 ],
+          [ 130, 455 ],
+          [ 115, 455 ],
+          [ 115, 95 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "14",
+      "type": "shelf",
+      "levels": 5,
+      "height": [20, 20, 40, 20, 40]
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 132, 95 ],
+          [ 147, 95 ],
+          [ 147, 455 ],
+          [ 132, 455 ],
+          [ 132, 95 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "15",
+      "type": "shelf",
+      "levels": 5,
+      "height": [20, 20, 40, 20, 40]
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 170, 95 ],
+          [ 185, 95 ],
+          [ 185, 455 ],
+          [ 170, 455 ],
+          [ 170, 95 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "16",
+      "type": "shelf",
+      "levels": 5,
+      "height": [20, 20, 40, 20, 40]
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 187, 95 ],
+          [ 202, 95 ],
+          [ 202, 455 ],
+          [ 187, 455 ],
+          [ 187, 95 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "17",
+      "type": "shelf",
+      "levels": 5,
+      "height": [20, 20, 40, 20, 40]
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 230, 95 ],
+          [ 245, 95 ],
+          [ 245, 520 ],
+          [ 230, 520 ],
+          [ 230, 95 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "18",
+      "type": "shelf",
+      "levels": 5,
+      "height": [20, 20, 40, 20, 40]
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 255, 95 ],
+          [ 270, 95 ],
+          [ 270, 520 ],
+          [ 255, 520 ],
+          [ 255, 95 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "21",
+      "type": "shelf",
+      "levels": 5,
+      "height": [20, 20, 40, 20, 40]
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 290, 95 ],
+          [ 305, 95 ],
+          [ 305, 520 ],
+          [ 290, 520 ],
+          [ 290, 95 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "22",
+      "type": "shelf",
+      "levels": 5,
+      "height": [20, 20, 40, 20, 40]
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 307, 95 ],
+          [ 322, 95 ],
+          [ 322, 520 ],
+          [ 307, 520 ],
+          [ 307, 95 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "23",
+      "type": "shelf",
+      "levels": 5,
+      "height": [20, 20, 40, 20, 40]
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 350, 95 ],
+          [ 365, 95 ],
+          [ 365, 520 ],
+          [ 350, 520 ],
+          [ 350, 95 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "24",
+      "type": "shelf",
+      "levels": 5,
+      "height": [20, 20, 40, 20, 40]
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 367, 95 ],
+          [ 382, 95 ],
+          [ 382, 520 ],
+          [ 367, 520 ],
+          [ 367, 95 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "25",
+      "type": "shelf",
+      "levels": 5,
+      "height": [20, 20, 40, 20, 40]
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 410, 95 ],
+          [ 425, 95 ],
+          [ 425, 520 ],
+          [ 410, 520 ],
+          [ 410, 95 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "26",
+      "type": "shelf",
+      "levels": 5,
+      "height": [20, 20, 40, 20, 40]
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 427, 95 ],
+          [ 442, 95 ],
+          [ 442, 520 ],
+          [ 427, 520 ],
+          [ 427, 95 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "27",
+      "type": "shelf",
+      "levels": 5,
+      "height": [20, 20, 40, 20, 40]
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 470, 95 ],
+          [ 485, 95 ],
+          [ 485, 520 ],
+          [ 470, 520 ],
+          [ 470, 95 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "28",
+      "type": "shelf",
+      "levels": 5,
+      "height": [20, 20, 40, 20, 40]
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 495, 95 ],
+          [ 510, 95 ],
+          [ 510, 520 ],
+          [ 495, 520 ],
+          [ 495, 95 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "31",
+      "type": "shelf",
+      "levels": 5,
+      "height": [20, 20, 40, 20, 40]
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 540, 95 ],
+          [ 555, 95 ],
+          [ 555, 520 ],
+          [ 540, 520 ],
+          [ 540, 95 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "32",
+      "type": "shelf",
+      "levels": 5,
+      "height": [20, 20, 40, 20, 40]
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 557, 95 ],
+          [ 572, 95 ],
+          [ 572, 520 ],
+          [ 557, 520 ],
+          [ 557, 95 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "33",
+      "type": "shelf",
+      "levels": 5,
+      "height": [20, 20, 40, 20, 40]
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 600, 95 ],
+          [ 615, 95 ],
+          [ 615, 520 ],
+          [ 600, 520 ],
+          [ 600, 95 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "34",
+      "type": "shelf",
+      "levels": 5,
+      "height": [20, 20, 40, 20, 40]
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 617, 95 ],
+          [ 632, 95 ],
+          [ 632, 520 ],
+          [ 617, 520 ],
+          [ 617, 95 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "35",
+      "type": "shelf",
+      "levels": 5,
+      "height": [20, 20, 40, 20, 40]
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 660, 95 ],
+          [ 675, 95 ],
+          [ 675, 520 ],
+          [ 660, 520 ],
+          [ 660, 95 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "36",
+      "type": "shelf",
+      "levels": 5,
+      "height": [20, 20, 40, 20, 40]
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 677, 95 ],
+          [ 692, 95 ],
+          [ 692, 520 ],
+          [ 677, 520 ],
+          [ 677, 95 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "37",
+      "type": "shelf",
+      "levels": 5,
+      "height": [20, 20, 40, 20, 40]
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 720, 95 ],
+          [ 735, 95 ],
+          [ 735, 520 ],
+          [ 720, 520 ],
+          [ 720, 95 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "38",
+      "type": "shelf",
+      "levels": 5,
+      "height": [20, 20, 40, 20, 40]
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 745, 95 ],
+          [ 760, 95 ],
+          [ 760, 520 ],
+          [ 745, 520 ],
+          [ 745, 95 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "41",
+      "type": "shelf",
+      "levels": 5,
+      "height": [20, 20, 40, 20, 40]
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 780, 95 ],
+          [ 795, 95 ],
+          [ 795, 520 ],
+          [ 780, 520 ],
+          [ 780, 95 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "42",
+      "type": "shelf",
+      "levels": 5,
+      "height": [20, 20, 40, 20, 40]
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 797, 95 ],
+          [ 812, 95 ],
+          [ 812, 520 ],
+          [ 797, 520 ],
+          [ 797, 95 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "43",
+      "type": "shelf",
+      "levels": 5,
+      "height": [20, 20, 40, 20, 40]
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 840, 95 ],
+          [ 855, 95 ],
+          [ 855, 520 ],
+          [ 840, 520 ],
+          [ 840, 95 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "44",
+      "type": "shelf",
+      "levels": 5,
+      "height": [20, 20, 40, 20, 40]
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 857, 95 ],
+          [ 872, 95 ],
+          [ 872, 520 ],
+          [ 857, 520 ],
+          [ 857, 95 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "45",
+      "type": "shelf",
+      "levels": 5,
+      "height": [20, 20, 40, 20, 40]
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 900, 95 ],
+          [ 915, 95 ],
+          [ 915, 520 ],
+          [ 900, 520 ],
+          [ 900, 95 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "46",
+      "type": "shelf",
+      "levels": 5,
+      "height": [20, 20, 40, 20, 40]
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 917, 95 ],
+          [ 932, 95 ],
+          [ 932, 520 ],
+          [ 917, 520 ],
+          [ 917, 95 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "47",
+      "type": "shelf",
+      "levels": 5,
+      "height": [20, 20, 40, 20, 40]
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 955, 30 ],
+          [ 970, 30 ],
+          [ 970, 80 ],
+          [ 955, 80 ],
+          [ 955, 30 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "48a",
+      "type": "shelf",
+      "levels": 5,
+      "height": [20, 20, 40, 20, 40]
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 955, 90 ],
+          [ 970, 90 ],
+          [ 970, 150 ],
+          [ 955, 150 ],
+          [ 955, 90 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "48b",
+      "type": "shelf",
+      "levels": 5,
+      "direction": "vertical",
+      "height": [20, 20, 40, 20, 40]
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 700, 10 ],
+          [ 800, 10 ],
+          [ 800, 25 ],
+          [ 700, 25 ],
+          [ 700, 10 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "49",
+      "type": "shelf",
+      "levels": 5,
+      "direction": "horizontal",
+      "height": [20, 20, 40, 20, 40]
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 130, 20 ],
+          [ 160, 20 ],
+          [ 160, 40 ],
+          [ 130, 40 ],
+          [ 130, 20 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+      "type": "stack",
+      "shelfId": "13",
+      "shelfLevel": 1,
+      "height": 15
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 130, 50 ],
+          [ 160, 50 ],
+          [ 160, 70 ],
+          [ 130, 70 ],
+          [ 130, 50 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+      "type": "stack",
+      "shelfId": "13",
+      "shelfLevel": 1,
+      "height": 15
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 130, 20 ],
+          [ 160, 20 ],
+          [ 160, 40 ],
+          [ 130, 40 ],
+          [ 130, 20 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+      "type": "stack",
+      "shelfId": "13",
+      "shelfLevel": 2,
+      "height": 15
+    }
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [ 130, 20 ],
+          [ 160, 20 ],
+          [ 160, 40 ],
+          [ 130, 40 ],
+          [ 130, 20 ]
+        ]
+      ]
+    },
+    "properties": {
+      "id": "LEF6UaVf97wNbgA74mie7IHEKCZQrKYn",
+      "type": "stack",
+      "shelfId": "13",
+      "shelfLevel": 3,
+      "height": 15
+    }
+  }]
+}

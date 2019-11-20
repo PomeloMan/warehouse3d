@@ -15,26 +15,34 @@ export class DomUtil {
     return rootEle;
   }
 
-  // 创建 Canvas 元素
-  static createCanvasEle(pEle: HTMLElement): HTMLCanvasElement {
+  /**
+   * 创建 Canvas 元素
+   * @param pEle 父级元素
+   * @param logo 是否创建右下角logo元素
+   */
+  static createCanvasEle(pEle: HTMLElement, logo: boolean = false): HTMLCanvasElement {
     let canvasEle = document.createElement('canvas');
     canvasEle.style.width = '100%';
     canvasEle.style.height = '100%';
     pEle.appendChild(canvasEle);
 
-    createLogoEle(pEle);
+    if (!!logo) {
+      createLogoEle(pEle);
+    }
 
     return canvasEle;
 
     function createLogoEle(pEle: HTMLElement): HTMLElement {
       let logoEle = document.createElement('a');
-      logoEle.innerText = "";
-      logoEle.style.color = "red";
+      logoEle.href = 'https://github.com/PomeloMan/warehouse3d';
+      logoEle.innerText = 'Warehouse';
+      logoEle.style.color = "#ff4d4f";
       logoEle.style.width = '100px';
       logoEle.style.height = '20px';
       logoEle.style.bottom = '10px';
       logoEle.style.right = '20px';
       logoEle.style.position = 'absolute';
+      logoEle.style.textDecoration = 'none';
       pEle.appendChild(logoEle);
       return logoEle;
     }

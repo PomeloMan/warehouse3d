@@ -31,7 +31,6 @@ export class Detector {
 
 
   getWebGLErrorMessage() {
-
     var element = document.createElement('div');
     element.id = 'webgl-error-message';
     element.style.fontFamily = 'monospace';
@@ -52,15 +51,12 @@ export class Detector {
         'Your browser does not seem to support <a href="http://khronos.org/webgl/wiki/Getting_a_WebGL_Implementation" style="color:#000">WebGL</a>.<br/>',
         'Find out how to get it <a href="http://get.webgl.org/" style="color:#000">here</a>.'
       ].join('\n');
-
     }
 
     return element;
-
   }
 
   addGetWebGLMessage(parameters: any) {
-
     var parent, id, element;
 
     parameters = parameters || {};
@@ -72,7 +68,5 @@ export class Detector {
     element.id = id;
 
     parent.appendChild(element);
-
   }
-
 }

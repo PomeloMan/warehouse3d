@@ -1,3 +1,5 @@
+import * as THREE from 'three';
+
 /**
  * 货架对象
  */
@@ -17,4 +19,24 @@ export class Shelf {
 export class Pole {
   length: number = 5;
   width: number = 5;
+}
+
+
+/**
+ * 货架事件
+ */
+export class ShelfListener {
+
+  static click = function (event) {
+
+  }
+}
+
+/**
+ * 货架层位事件
+ */
+export class ShelfLevelListener {
+  static click = function (event) {
+
+  }
 }

@@ -4,5 +4,5 @@ import { Feature } from "./feature";
 export class FeatureCollection implements GeoJson {
 
   type: string = 'FeatureCollection';
-  features?: Array<Feature>;
+  features?: Array<Feature> = new Array<Feature>();
 }

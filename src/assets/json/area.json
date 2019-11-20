@@ -19,7 +19,7 @@
       "type": "area",
       "height": 100,
       "name": "IT机房",
-      "color": "#818181"
+      "color": "primary"
     }
   }, {
     "type": "Feature",
@@ -42,7 +42,7 @@
       "type": "area",
       "height": 20,
       "name": "车间通道",
-      "color": "#C9C9C9"
+      "color": "tertiary"
     }
   }, {
     "type": "Feature",
@@ -63,7 +63,7 @@
       "type": "area",
       "height": 20,
       "name": "QC留样",
-      "color": "#A4A4A4"
+      "color": "secondary"
     }
   }, {
     "type": "Feature",
@@ -84,7 +84,7 @@
       "type": "area",
       "height": 20,
       "name": "坦克大料  大料零头",
-      "color": "#FBD9C5"
+      "color": "danger"
     }
   }, {
     "type": "Feature",
@@ -105,7 +105,7 @@
       "type": "area",
       "height": 100,
       "name": "办公室",
-      "color": "#CFE3F4"
+      "color": "tertiary"
     }
   }, {
     "type": "Feature",
@@ -126,7 +126,7 @@
       "type": "area",
       "height": 20,
       "name": "回用料",
-      "color": "#FBD9C5"
+      "color": "danger"
     }
   }, {
     "type": "Feature",
@@ -147,7 +147,7 @@
       "type": "area",
       "height": 20,
       "name": "盖子",
-      "color": "#FBD9C5"
+      "color": "danger"
     }
   }, {
     "type": "Feature",
@@ -168,7 +168,7 @@
       "type": "area",
       "height": 100,
       "name": "",
-      "color": "#CFE3F4"
+      "color": "tertiary"
     }
   }, {
     "type": "Feature",
@@ -189,7 +189,7 @@
       "type": "area",
       "height": 20,
       "name": "盖子拆包区",
-      "color": "#FBD9C5"
+      "color": "danger"
     }
   }, {
     "type": "Feature",
@@ -216,7 +216,7 @@
       "type": "area",
       "height": 20,
       "name": "大料AGV区域",
-      "color": "#AED494"
+      "color": "success"
     }
   }, {
     "type": "Feature",
@@ -241,7 +241,7 @@
       "type": "area",
       "height": 20,
       "name": "预配区",
-      "color": "#F5B58B"
+      "color": "danger"
     }
   }, {
     "type": "Feature",
@@ -262,7 +262,7 @@
       "type": "area",
       "height": 20,
       "name": "危化品",
-      "color": "#FFA500"
+      "color": "warning"
     }
   }, {
     "type": "Feature",
@@ -283,7 +283,7 @@
       "type": "area",
       "height": 20,
       "name": "充电区",
-      "color": "#FFA500"
+      "color": "warning"
     }
   }]
 }

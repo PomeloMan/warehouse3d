@@ -2,21 +2,35 @@ import * as THREE from 'three';
 import * as OrbitControls from 'three-orbitcontrols';
 import * as Stats from 'stats.js'
 import { Detector } from './detector';
-import { DomUtil } from '../utils/domUtil';
+import { DomUtil } from '../utils/dom.util';
 import { GeoJson } from '../geojson/geojson';
 import { Feature } from '../geojson/feature';
 import { FeatureCollection } from '../geojson/feature-collection';
 import { Polygon } from '../geojson/polygon';
-import { Shelf } from './modal/shelf';
-import { Stack } from './modal/stack';
+import { Shelf, ShelfListener, ShelfLevelListener } from './modal/shelf';
+import { Stack, StackListener } from './modal/stack';
 import { Area } from './modal/area';
-import { DrawUtil } from '../utils/drawUtil';
+import { DrawUtil, MaterialType } from '../utils/draw.util';
+import { GeoJsonUtil } from '../utils/geojson.util';
+import { Warehouse, Type } from './modal/warehouse';
+import { GroundListener } from './modal/ground';
+import { EventType } from './event/event-type';
+import { Theme, DefaultTheme } from '../themes/default.theme';
 
-// const area = require('../assets/area.json');
-// const shelf = require('../assets/shelf.json');
-// const stack = require('../assets/stack.json');
+// const area = require('../assets/json/area.json');
+// const shelf = require('../assets/json/shelf.json');
+// const stack = require('../assets/json/stack.json');
 
 export class Map {
+
+  /**
+   * 仓库数据
+   */
+  warehouse: Warehouse;
+  /**
+   * 主题
+   */
+  theme: Theme;
 
   scene: THREE.Scene; // 3d地图渲染场景
   renderer: THREE.WebGLRenderer; // 2、3d地图渲染场景渲染器
@@ -24,14 +38,10 @@ export class Map {
   controls: any; // 3d 缩放旋转平移控制器 OrbitControls
   rayCaster: THREE.Raycaster; // 给模型绑定点击事件
   stats: Stats; // fps 工具
-
   sceneChanged: boolean = true; // 场景是否改变
-
-  groundXYZ: { x: number, y: number, z: number } = { x: 0, y: 0, z: 0 }; // 广场原点坐标
 
   museXY = { X: 0, Y: 0 };
   selectedMesh: any;
-  selectedColor: string = '#39FAFA';
   selectionListener: Function | undefined;
   /**
    * 根元素
@@ -49,24 +59,36 @@ export class Map {
    * 货架层面高度
    */
   private levelSurfaceDepth: number = 1;
+  /**
+   * 是否显示文字的镜头临界点
+   */
+  private criticalPoint: number = 300;
+  /**
+   * 是否显示模型标注
+   */
+  private isShowMeshLabel: boolean = false;
 
   constructor(options?: MapOptions) {
     if (!Detector.webgl) {
       console.error("浏览器不支持WebGL 3D");
       return;
     }
-    console.info("浏览器支持WebGL 3D");
 
-    // 初始话根元素
+    // 初始化主题
+    if (!options || !options.theme) {
+      this.theme = new DefaultTheme();
+    }
+
+    // 初始化根元素
     if (options && !!options.rootElement) {
       this.rootElement = options.rootElement;
     } else {
       this.rootElement = DomUtil.createRootEle();
     }
-    // 初始话 Canvas 元素
+    // 初始化 Canvas 元素
     this.canvasElement = DomUtil.createCanvasEle(this.rootElement);
 
-    // 初始话场景
+    // 初始化场景
     this.initScene();
     this.createObjects();
     this.setSelectable(true);
@@ -89,7 +111,7 @@ export class Map {
     this.renderer.autoClear = true;
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(this.rootElement.clientWidth, this.rootElement.clientHeight);
-    this.renderer.setClearColor(0xf2f2f2, 1.0);
+    this.renderer.setClearColor(this.theme.background, 1.0);
 
     // 相机
     this.camera = new THREE.PerspectiveCamera(50, canvasWidth / canvasHeight, 0.1, 2000);
@@ -101,9 +123,20 @@ export class Map {
 
     // controls 地图平移旋转缩放 操作工具
     this.controls = new OrbitControls(this.camera, this.canvasElement);
+    this.controls.maxPolarAngle = 0.9 * Math.PI / 2; // 设置镜头最大下视角度(鼠标上下移动)
+    this.controls.minDistance = 200; // 设置相机距离原点的最小距离(鼠标滚轮向前滚动)
+    this.controls.maxDistance = 1000; // 设置镜头最大视距(鼠标滚轮向后滚动)
     this.controls.enableKeys = true;
 
-    this.controls.addEventListener('change', () => {
+    // 操作控制器重新渲染场景
+    this.controls.addEventListener(EventType.CHANGE, () => {
+      if (this.camera.position.y <= this.criticalPoint && !this.isShowMeshLabel) {
+        this.isShowMeshLabel = true;
+        this.updateLabels();
+      } else if (this.camera.position.y > this.criticalPoint && this.isShowMeshLabel) {
+        this.isShowMeshLabel = false;
+        this.updateLabels();
+      }
       this.renderer.render(this.scene, this.camera);
     });
 
@@ -122,6 +155,15 @@ export class Map {
     this.stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
     document.body.appendChild(this.stats.dom);
 
+    this.drawGround(960, 630, { x: 10, y: 10, z: 0 });
+
+    // grid
+    var helper: any = new THREE.GridHelper(2000, 200); // 2000/200 一个格子的边长为 10
+    helper.position.set(0, 0, 0);
+    helper.material.opacity = 0.25;
+    helper.material.transparent = true;
+    this.scene.add(helper);
+
     this.animate();
   }
 
@@ -129,62 +171,71 @@ export class Map {
    * 创建模型
    */
   createObjects() {
-    this.drawGround(960, 630, { x: 10, y: 10 });
     // this.drawArea(area);
     // this.drawShelf(shelf);
     // this.drawStack(stack);
     var loader = new THREE.FileLoader();
-    loader.load('assets/area.json', (geojson: string) => {
-      this.drawArea(JSON.parse(geojson));
-    })
-    loader.load('assets/shelves.json', (geojson: string) => {
-      this.drawShelf(JSON.parse(geojson));
 
-      loader.load('assets/stacks.json', (geojson: string) => {
-        this.drawStack(JSON.parse(geojson));
-      })
+    loader.load('assets/json/all.json', (geojson: string) => {
+      this.warehouse = GeoJsonUtil.parse(geojson);
+
+      this.drawArea(this.warehouse.areas);
+      this.drawShelf(this.warehouse.shelves);
+      this.drawStack(this.warehouse.stacks);
     })
+
+    // loader.load('assets/json/area.json', (geojson: string) => {
+    //   this.drawArea(JSON.parse(geojson));
+    // })
+    // loader.load('assets/json/shelves.json', (geojson: string) => {
+    //   this.drawShelf(JSON.parse(geojson));
+    //   loader.load('assets/json/stacks.json', (geojson: string) => {
+    //     this.drawStack(JSON.parse(geojson));
+    //   })
+    // })
   }
 
   /**
    * 绘制广场
-   * @param length 长
-   * @param width 宽
-   * @param startPoint 起始点坐标 默认 {x: 0, y: 0}
+   * @param width 长
+   * @param depth 深
+   * @param point 起始点坐标，默认：{x: 0, y: 0, z: 0}
    */
-  drawGround(length, width, startPoint?: { x, y }) {
+  drawGround(width, depth, point: { x, y, z } = { x: 0, y: 0, z: 0 }) {
     this.reDraw();
     this.clearObj();
 
-    if (!startPoint) {
-      startPoint = { x: 0, y: 0 };
-    }
     let ground = new THREE.Shape()
-      .moveTo(startPoint.x, startPoint.y)
-      .lineTo(startPoint.x, width + startPoint.y)
-      .lineTo(length + startPoint.x, width + startPoint.y)
-      .lineTo(length + startPoint.x, startPoint.y)
-      .lineTo(startPoint.x, startPoint.y);
+      .moveTo(point.x, point.y)
+      .lineTo(point.x, depth + point.y)
+      .lineTo(width + point.x, depth + point.y)
+      .lineTo(width + point.x, point.y)
+      .lineTo(point.x, point.y);
 
-    // https://threejs.org/docs/#api/en/geometries/ExtrudeGeometry
-    let extrudeSettings = { // 矩形
-      steps: 1,
-      depth: this.groundDepth,
-      bevelEnabled: false
-    };
-    this.groundXYZ = {
-      x: startPoint.x,
-      y: startPoint.y,
-      z: extrudeSettings.depth
-    }
-    // This object extrudes a 2D shape to a 3D geometry.
-    let groundGeometry = new THREE.ExtrudeGeometry(ground, extrudeSettings);
-    let groundMesh = new THREE.Mesh(groundGeometry, new THREE.MeshPhongMaterial({ color: '#FFFFFF' }));
+    // 设置纹理
+    // @reference https://threejs.org/docs/index.html#api/en/textures/Texture
+    const loader = new THREE.TextureLoader();
+    const texture = loader.load('assets/images/stone.jpg');
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set(16, 16);
+
+    const groundMesh = DrawUtil.createExtrudeMesh(
+      ground.getPoints(),
+      { steps: 1, depth: this.groundDepth, bevelEnabled: false },
+      MaterialType.MeshPhongMaterial,
+      { ...this.theme.ground, bumpMap: texture },
+      { x: 0, y: 0, z: 0 },
+      { type: Type.GROUND, material: { ...this.theme.ground } },
+      [{ name: EventType.CLICK, event: GroundListener.click }]
+    );
+    // 添加事件
+    // groundMesh.addEventListener(EventType.CLICK, GroundListener.click);
+
     groundMesh.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2); // 将模型从y轴旋转到z轴
-
-    groundMesh.userData.type = 'area';
-
     this.scene.add(groundMesh);
+
+    return groundMesh;
   }
 
   /**
@@ -238,12 +289,11 @@ export class Map {
         heightArr.push(shelf.height);
       }
     }
-    let currentHeight = this.groundXYZ.z;
-    const shelfLevelGroup = new THREE.Group();
-    shelfLevelGroup.userData = {
+    let currentHeight = this.groundDepth;
+    const shelfGroup = new THREE.Group();
+    shelfGroup.userData = {
       type: 'Shelf',
-      color: '#fff',
-      opacity: 1,
+      ...this.theme.shelf,
       ...shelf
     }
     for (let index = 0; index < shelf.levels; index++) {
@@ -253,16 +303,16 @@ export class Map {
         depth: this.levelSurfaceDepth,
         bevelEnabled: false
       });
-      let levelMat = new THREE.MeshLambertMaterial({ color: 0xffffff, opacity: 1, transparent: true });
+      let levelMat = new THREE.MeshLambertMaterial(this.theme.shelf.level);
 
       let levelBotMesh = new THREE.Mesh(levelGeo, levelMat);
-      levelBotMesh.userData.opacity = 1;
+      levelBotMesh.userData.material = { ...this.theme.shelf.level };
       levelBotMesh.position.set(0, currentHeight, 0);
 
       currentHeight = currentHeight + heightArr[index]
 
       let levelTopMesh = new THREE.Mesh(levelGeo, levelMat);
-      levelTopMesh.userData.opacity = 1;
+      levelTopMesh.userData.material = { ...this.theme.shelf.level };
       levelTopMesh.position.set(0, currentHeight - this.levelSurfaceDepth, 0);
 
       levelBotMesh.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
@@ -287,7 +337,7 @@ export class Map {
         poleLength = shelf.pole.width, poleWidth = shelf.width || shelf.pole.length;
       }
       let poleGeo = new THREE.BoxBufferGeometry(poleLength, heightArr[index], poleWidth); // 长/高/宽
-      let poleMat = new THREE.MeshLambertMaterial({ color: 0xffffff, opacity: 1, transparent: true });
+      let poleMat = new THREE.MeshLambertMaterial(this.theme.shelf.pole);
 
       // 添加货柜四个角
       // let poleMeshsw = new THREE.Mesh(poleGeo, poleMat); // 西南角
@@ -306,10 +356,10 @@ export class Map {
 
       // 添加货柜2边的柱子
       let poleMeshfront = new THREE.Mesh(poleGeo, poleMat);
-      poleMeshfront.userData.opacity = 1;
+      poleMeshfront.userData.material = { ...this.theme.shelf.pole };
       poleMeshfront.position.set(points[0].x + poleLength / 2, heightArr[index] / 2 + currentHeight - heightArr[index], -(points[0].y + poleWidth / 2));
       let poleMeshbackend = new THREE.Mesh(poleGeo, poleMat);
-      poleMeshbackend.userData.opacity = 1;
+      poleMeshbackend.userData.material = { ...this.theme.shelf.pole };
       poleMeshbackend.position.set(points[2].x + poleLength / 2 - poleLength, heightArr[index] / 2 + currentHeight - heightArr[index], -(points[2].y - poleWidth / 2));
 
       levelGroup.add(poleMeshfront);
@@ -317,14 +367,16 @@ export class Map {
 
       levelGroup.userData = {
         type: 'ShelfLevel',
-        color: '#fff',
-        opacity: 1,
         coordinate: { y: currentHeight },
         level: index + 1 // 从 1 开始
       };
 
-      shelfLevelGroup.add(levelGroup);
-      this.scene.add(shelfLevelGroup);
+      // 添加层位点击事件
+      levelGroup.addEventListener(EventType.CLICK, ShelfLevelListener.click);
+      shelfGroup.add(levelGroup);
+      // 添加货架事件
+      shelfGroup.addEventListener(EventType.CLICK, ShelfListener.click);
+      this.scene.add(shelfGroup);
     }
   }
 
@@ -360,7 +412,7 @@ export class Map {
             depth: depth,
             bevelEnabled: false
           });
-          let stackMat = new THREE.MeshLambertMaterial({ color: 'red', opacity: 0.7, transparent: true });
+          let stackMat = new THREE.MeshLambertMaterial(this.theme.stack);
 
           // 找到指定货架
           const shelf = this.target(stack.shelfId, 'Shelf');
@@ -385,9 +437,10 @@ export class Map {
 
           stackMesh.userData = {
             type: 'Stack',
-            color: 'red',
-            opacity: 0.7,
-            ...stack
+            ...stack,
+            material: {
+              ...this.theme.stack
+            }
           };
 
           this.scene.add(stackMesh);
@@ -416,7 +469,6 @@ export class Map {
         const depth: any = feature.properties.height || 10;
         if (geometry && geometry.type === 'Polygon') {
           const polygon: Polygon = feature.geometry;
-          area.color = feature.properties.color ? feature.properties.color : area.color;
           let coordinates = polygon.coordinates;
           area.vectors = [];
           coordinates.forEach((rings: Array<any>) => {
@@ -430,11 +482,8 @@ export class Map {
             bevelEnabled: false
           });
 
-          let areakMat = new THREE.MeshLambertMaterial({
-            color: area.color,
-            opacity: 0.7,
-            transparent: true,
-          });
+          const style = this.theme.area(area.color);
+          let areakMat = new THREE.MeshLambertMaterial(style);
 
           let areaMesh = new THREE.Mesh(areaGeo, areakMat);
           areaMesh.position.set(0, 2, 0);
@@ -442,8 +491,10 @@ export class Map {
 
           areaMesh.userData = {
             type: 'Area',
-            opacity: 0.7,
-            ...area
+            ...area,
+            material: {
+              ...style
+            }
           };
 
           this.scene.add(areaMesh);
@@ -516,6 +567,17 @@ export class Map {
       this.fadeOutAll();
       for (var i = 0; i < intersects.length; i++) {
         let selectedObj: any = intersects[i].object;
+        if (selectedObj.userData.type === 'ground') {
+          if (selectedObj.hasEventListener('click', GroundListener.click)) { // 检查是否有点击事件
+            selectedObj.dispatchEvent({ type: 'click', message: 'vroom vroom!' }); // 触发点击事件
+          }
+          this.fadeInAll();
+          if (this.selectedMesh) {
+            this.reset(this.selectedMesh);
+            this.selectedMesh = null;
+          }
+          break;
+        }
         if (selectedObj.userData.type === 'area') {
           this.fadeInAll();
           // 恢复为以前的颜色
@@ -535,9 +597,15 @@ export class Map {
   }
 
   /**
-   * 处理 Area
+   * 处理 Area, 显示/隐藏文字标注
    */
   handleAreaObj(selectedObj) {
+    if (selectedObj.userData.type !== 'area') {
+      return;
+    }
+    if (!selectedObj.userData.name) {
+      return;
+    }
     if (!!selectedObj.userData.showName) { // 隐藏名称
       selectedObj.userData.showName = false;
       this.scene.remove(selectedObj.userData.nameMesh);
@@ -593,12 +661,8 @@ export class Map {
       // 存储当前颜色
       this.selectedMesh.currentHex = this.selectedMesh.material.color.getHex();
       // 设置新的选中颜色
-      this.selectedMesh.material.color = new THREE.Color(this.selectedColor);
+      this.selectedMesh.material.color = new THREE.Color(this.theme.selectedColor);
       this.selectedMesh.material.opacity = 0.7;
-      // 设置选中后显示模型名称
-      // 计算模型的uv坐标供材质贴图使用
-      // DrawUtil.assignUVs(this.selectedMesh.geometry);
-      // this.selectedMesh.material.map = new THREE.CanvasTexture(DomUtil.createTextCanvas(this.selectedMesh.userData.type));
 
       // 如果选中模型是库位，则找到库位相关的货架及层位，还原对应层位的状态
       if (this.selectedMesh.userData.type === 'Stack') {
@@ -640,8 +704,8 @@ export class Map {
 
       // 给选中模型添加状态（选中颜色）
       this.selectedMesh.children.forEach(mesh => {
-        mesh.material.color = new THREE.Color(this.selectedColor); // 选中颜色
-        mesh.material.opacity = mesh.userData.opacity || this.selectedMesh.userData.opacity; // 还原透明度
+        mesh.material.color = new THREE.Color(this.theme.selectedColor);
+        mesh.material.opacity = mesh.userData.material.opacity || this.selectedMesh.userData.material.opacity; // 还原透明度
       });
     }
   }
@@ -662,7 +726,7 @@ export class Map {
    */
   private fadeIn(obj) {
     if (obj.type === 'Mesh') {
-      obj.material.opacity = obj.userData.opacity || 0.7;
+      obj.material.opacity = obj.userData.material.opacity || 0.7;
     } else if (obj.type === 'Group') {
       obj.children.forEach((child: any) => {
         this.fadeIn(child)
@@ -686,8 +750,8 @@ export class Map {
    */
   private fadeOut(obj) {
     if (obj.type === 'Mesh') {
-      if (!obj.userData.opacity) {
-        obj.userData.opacity = obj.material.opacity;
+      if (obj.userData.material && !obj.userData.material.opacity) {
+        obj.userData.material.opacity = obj.material.opacity;
       }
       obj.material.opacity = 0.1;
     } else if (obj.type === 'Group') {
@@ -713,12 +777,12 @@ export class Map {
   reset(object3d: any, type?: 'color' | 'opacity') {
     if (object3d.type === 'Mesh') {
       if (type === 'color') {
-        object3d.material.color = new THREE.Color(object3d.userData.color);
+        object3d.material.color = new THREE.Color(object3d.userData.material.color);
       } else if (type === 'opacity') {
-        object3d.material.opacity = object3d.userData.opacity;
+        object3d.material.opacity = object3d.userData.material.opacity;
       } else {
-        object3d.material.color = new THREE.Color(object3d.userData.color);
-        object3d.material.opacity = object3d.userData.opacity;
+        object3d.material.color = new THREE.Color(object3d.userData.material.color);
+        object3d.material.opacity = object3d.userData.material.opacity;
       }
     } else if (object3d.type === 'Group') {
       for (let i = 0; i < object3d.children.length; i++) {
@@ -759,13 +823,18 @@ export class Map {
       this.controls.update();
       this.renderer.clear();
       this.renderer.render(this.scene, this.camera);
-      // 更新labels
-      // if (this.showNames || this.isShowPubPoints) {
-      //   // this.updateLabels();
-      // }
     }
     this.sceneChanged = false;
     this.stats.end();
+  }
+
+  /**
+   * 更新文字标注
+   */
+  updateLabels() {
+    this.scene.children.forEach(obj => {
+      this.handleAreaObj(obj);
+    })
   }
 
   /**
@@ -779,4 +848,5 @@ export class Map {
 export class MapOptions {
   rootElement?: HTMLElement;
   selectable?: boolean;
+  theme?: Theme;
 }
