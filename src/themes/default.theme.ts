@@ -56,7 +56,7 @@ export class DefaultTheme implements Theme {
    * 库位样式
    */
   stack = {
-    color: 'red',
+    color: '#fadb14', // yellow-8
     opacity: 0.7,
     transparent: true
   }
