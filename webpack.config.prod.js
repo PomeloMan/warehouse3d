@@ -24,10 +24,10 @@ module.exports = merge(config, {
   },
   plugins: [
     new CleanWebpackPlugin(),
-    new MiniCssExtractPlugin({
-      filename: 'styles.css',
-      chunkFilename: '[chunkhash].css'
-    }),
+    // new MiniCssExtractPlugin({
+    //   filename: 'styles.css',
+    //   chunkFilename: '[chunkhash].css'
+    // }),
   ],
   module: {
     rules: [{
