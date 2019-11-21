@@ -17,5 +17,6 @@ export enum Type {
   GROUND = 'ground', // 平面
   AREA = 'area', // 区域
   SHELF = 'shelf', // 货架
+  SHELF_LEVEL = 'shelflevel', // 货架层面
   STACK = 'stack' // 库位
 }

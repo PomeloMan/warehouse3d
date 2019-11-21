@@ -17,8 +17,8 @@ export class Shelf {
  * 货架柱子
  */
 export class Pole {
-  length: number = 5;
-  width: number = 5;
+  width: number = 5; // 长
+  depth: number = 5; // 宽(深)
 }
 
 

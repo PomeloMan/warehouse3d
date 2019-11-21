@@ -8,7 +8,7 @@ import { Feature } from '../geojson/feature';
 import { FeatureCollection } from '../geojson/feature-collection';
 import { Polygon } from '../geojson/polygon';
 import { Shelf, ShelfListener, ShelfLevelListener } from './modal/shelf';
-import { Stack, StackListener } from './modal/stack';
+import { Stack } from './modal/stack';
 import { Area } from './modal/area';
 import { DrawUtil, MaterialType } from '../utils/draw.util';
 import { GeoJsonUtil } from '../utils/geojson.util';
@@ -16,6 +16,8 @@ import { Warehouse, Type } from './modal/warehouse';
 import { GroundListener } from './modal/ground';
 import { EventType } from './event/event-type';
 import { Theme, DefaultTheme } from '../themes/default.theme';
+import { GeometryType } from '../geojson/Geometry';
+import { WarehouseConfig } from '../configs/warehouse.config';
 
 // const area = require('../assets/json/area.json');
 // const shelf = require('../assets/json/shelf.json');
@@ -31,6 +33,10 @@ export class Map {
    * 主题
    */
   theme: Theme;
+   /**
+   * 配置
+   */
+  config: WarehouseConfig = new WarehouseConfig();
 
   scene: THREE.Scene; // 3d地图渲染场景
   renderer: THREE.WebGLRenderer; // 2、3d地图渲染场景渲染器
@@ -51,22 +57,6 @@ export class Map {
    * 绘制内容的 Canvas 元素
    */
   private canvasElement: HTMLCanvasElement;
-  /**
-   * 地面高度
-   */
-  private groundDepth: number = 2;
-  /**
-   * 货架层面高度
-   */
-  private levelSurfaceDepth: number = 1;
-  /**
-   * 是否显示文字的镜头临界点
-   */
-  private criticalPoint: number = 300;
-  /**
-   * 是否显示模型标注
-   */
-  private isShowMeshLabel: boolean = false;
 
   constructor(options?: MapOptions) {
     if (!Detector.webgl) {
@@ -130,11 +120,11 @@ export class Map {
 
     // 操作控制器重新渲染场景
     this.controls.addEventListener(EventType.CHANGE, () => {
-      if (this.camera.position.y <= this.criticalPoint && !this.isShowMeshLabel) {
-        this.isShowMeshLabel = true;
+      if (this.camera.position.y <= this.config.criticalPoint && !this.config.isShowMeshLabel) {
+        this.config.isShowMeshLabel = true;
         this.updateLabels();
-      } else if (this.camera.position.y > this.criticalPoint && this.isShowMeshLabel) {
-        this.isShowMeshLabel = false;
+      } else if (this.camera.position.y > this.config.criticalPoint && this.config.isShowMeshLabel) {
+        this.config.isShowMeshLabel = false;
         this.updateLabels();
       }
       this.renderer.render(this.scene, this.camera);
@@ -154,8 +144,6 @@ export class Map {
     this.stats = new Stats();
     this.stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
     document.body.appendChild(this.stats.dom);
-
-    this.drawGround(960, 630, { x: 10, y: 10, z: 0 });
 
     // grid
     var helper: any = new THREE.GridHelper(2000, 200); // 2000/200 一个格子的边长为 10
@@ -179,6 +167,7 @@ export class Map {
     loader.load('assets/json/all.json', (geojson: string) => {
       this.warehouse = GeoJsonUtil.parse(geojson);
 
+      this.drawGround(960, 630, { x: 10, y: 10, z: 0 });
       this.drawArea(this.warehouse.areas);
       this.drawShelf(this.warehouse.shelves);
       this.drawStack(this.warehouse.stacks);
@@ -203,7 +192,6 @@ export class Map {
    */
   drawGround(width, depth, point: { x, y, z } = { x: 0, y: 0, z: 0 }) {
     this.reDraw();
-    this.clearObj();
 
     let ground = new THREE.Shape()
       .moveTo(point.x, point.y)
@@ -222,7 +210,7 @@ export class Map {
 
     const groundMesh = DrawUtil.createExtrudeMesh(
       ground.getPoints(),
-      { steps: 1, depth: this.groundDepth, bevelEnabled: false },
+      { steps: 1, depth: this.config.groundHeight, bevelEnabled: false },
       MaterialType.MeshPhongMaterial,
       { ...this.theme.ground, bumpMap: texture },
       { x: 0, y: 0, z: 0 },
@@ -247,15 +235,11 @@ export class Map {
     let shelf = new Shelf();
     if (geojson.type === 'Feature') {
       const feature: Feature = geojson;
-      if (feature && feature.properties && feature.properties.type === 'shelf') {
-        shelf.id = feature.properties.id || shelf.id;
-        shelf.height = feature.properties.height || shelf.height;
-        shelf.width = feature.properties.width || shelf.width;
-        shelf.levels = feature.properties.levels || shelf.levels;
-        shelf.direction = feature.properties.direction || shelf.direction;
+      if (feature && feature.properties && feature.properties.type === Type.SHELF) {
+        shelf = { ...shelf, ...feature.properties };
 
         const geometry = feature.geometry;
-        if (geometry && geometry.type === 'Polygon') {
+        if (geometry && geometry.type === GeometryType.Polygon) {
           const polygon: Polygon = feature.geometry;
           let coordinates = polygon.coordinates;
           shelf.vectors = [];
@@ -289,18 +273,19 @@ export class Map {
         heightArr.push(shelf.height);
       }
     }
-    let currentHeight = this.groundDepth;
+    let currentHeight = this.config.groundHeight;
     const shelfGroup = new THREE.Group();
     shelfGroup.userData = {
-      type: 'Shelf',
-      ...this.theme.shelf,
+      material: {
+        ...this.theme.shelf,
+      },
       ...shelf
     }
     for (let index = 0; index < shelf.levels; index++) {
       const levelGroup = new THREE.Group();
       // 绘制货架每层上下方的面
       let levelGeo = new THREE.ExtrudeGeometry(shape, {
-        depth: this.levelSurfaceDepth,
+        depth: this.config.surfaceHeight,
         bevelEnabled: false
       });
       let levelMat = new THREE.MeshLambertMaterial(this.theme.shelf.level);
@@ -313,7 +298,7 @@ export class Map {
 
       let levelTopMesh = new THREE.Mesh(levelGeo, levelMat);
       levelTopMesh.userData.material = { ...this.theme.shelf.level };
-      levelTopMesh.position.set(0, currentHeight - this.levelSurfaceDepth, 0);
+      levelTopMesh.position.set(0, currentHeight - this.config.surfaceHeight, 0);
 
       levelBotMesh.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
       levelTopMesh.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
@@ -330,24 +315,24 @@ export class Map {
         points = points.slice(0, points.length - 1);
       }
 
-      let poleLength, poleWidth; // 定义柱子的长与宽
+      let poleWidth, poleDepth; // 定义柱子的长与宽
       if (shelf.direction === 'vertical') {
-        poleLength = shelf.width || shelf.pole.length, poleWidth = shelf.pole.width;
+        poleWidth = shelf.width || shelf.pole.width, poleDepth = shelf.pole.depth;
       } else if (shelf.direction === 'horizontal') {
-        poleLength = shelf.pole.width, poleWidth = shelf.width || shelf.pole.length;
+        poleWidth = shelf.pole.depth, poleDepth = shelf.width || shelf.pole.width;
       }
-      let poleGeo = new THREE.BoxBufferGeometry(poleLength, heightArr[index], poleWidth); // 长/高/宽
+      let poleGeo = new THREE.BoxBufferGeometry(poleWidth, heightArr[index], poleDepth); // 长/高/宽
       let poleMat = new THREE.MeshLambertMaterial(this.theme.shelf.pole);
 
       // 添加货柜四个角
       // let poleMeshsw = new THREE.Mesh(poleGeo, poleMat); // 西南角
-      // poleMeshsw.position.set(points[0].x + poleLength / 2, heightArr[index] / 2 + currentHeight - heightArr[index], -(points[0].y + poleLength / 2));
+      // poleMeshsw.position.set(points[0].x + poleWidth / 2, heightArr[index] / 2 + currentHeight - heightArr[index], -(points[0].y + poleWidth / 2));
       // let poleMeshse = new THREE.Mesh(poleGeo, poleMat); // 东南角
-      // poleMeshse.position.set(points[1].x - poleLength / 2, heightArr[index] / 2 + currentHeight - heightArr[index], -(points[1].y + poleLength / 2));
+      // poleMeshse.position.set(points[1].x - poleWidth / 2, heightArr[index] / 2 + currentHeight - heightArr[index], -(points[1].y + poleWidth / 2));
       // let poleMeshne = new THREE.Mesh(poleGeo, poleMat); // 东北角
-      // poleMeshne.position.set(points[2].x - poleLength / 2, heightArr[index] / 2 + currentHeight - heightArr[index], -(points[2].y - poleLength / 2));
+      // poleMeshne.position.set(points[2].x - poleWidth / 2, heightArr[index] / 2 + currentHeight - heightArr[index], -(points[2].y - poleWidth / 2));
       // let poleMeshnw = new THREE.Mesh(poleGeo, poleMat); // 西北角
-      // poleMeshnw.position.set(points[3].x + poleLength / 2, heightArr[index] / 2 + currentHeight - heightArr[index], -(points[3].y - poleLength / 2));
+      // poleMeshnw.position.set(points[3].x + poleWidth / 2, heightArr[index] / 2 + currentHeight - heightArr[index], -(points[3].y - poleWidth / 2));
 
       // shelfLevelGroup.add(poleMeshsw);
       // shelfLevelGroup.add(poleMeshse);
@@ -357,16 +342,41 @@ export class Map {
       // 添加货柜2边的柱子
       let poleMeshfront = new THREE.Mesh(poleGeo, poleMat);
       poleMeshfront.userData.material = { ...this.theme.shelf.pole };
-      poleMeshfront.position.set(points[0].x + poleLength / 2, heightArr[index] / 2 + currentHeight - heightArr[index], -(points[0].y + poleWidth / 2));
+      if (this.config.useInheritStyle) {
+        poleMeshfront.position.set(points[0].x + poleWidth / 2, heightArr[index] / 2 + currentHeight - heightArr[index], -(points[0].y + poleDepth / 2));
+      } else {
+        if (shelf.direction === 'vertical') {
+          // z轴最后 - poleDepth 为预留柱子宽，不占用货架总宽。
+          poleMeshfront.position.set(points[0].x + poleWidth / 2, heightArr[index] / 2 + currentHeight - heightArr[index], -(points[0].y + poleDepth / 2 - poleDepth));
+        } else if (shelf.direction === 'horizontal') {
+          // x轴最后 - poleWidth 为预留柱子宽，不占用货架总宽。
+          poleMeshfront.position.set(points[0].x + poleWidth / 2 - poleWidth, heightArr[index] / 2 + currentHeight - heightArr[index], -(points[0].y + poleDepth / 2));
+        } else {
+          poleMeshfront.position.set(points[0].x + poleWidth / 2, heightArr[index] / 2 + currentHeight - heightArr[index], -(points[0].y + poleDepth / 2));
+        }
+      }
+
       let poleMeshbackend = new THREE.Mesh(poleGeo, poleMat);
       poleMeshbackend.userData.material = { ...this.theme.shelf.pole };
-      poleMeshbackend.position.set(points[2].x + poleLength / 2 - poleLength, heightArr[index] / 2 + currentHeight - heightArr[index], -(points[2].y - poleWidth / 2));
+      if (this.config.useInheritStyle) {
+        poleMeshbackend.position.set(points[2].x + poleWidth / 2 - poleWidth, heightArr[index] / 2 + currentHeight - heightArr[index], -(points[2].y - poleDepth / 2));
+      } else {
+        if (shelf.direction === 'vertical') {
+          // z轴最后 + poleDepth 为预留柱子宽，不占用货架总宽。
+          poleMeshbackend.position.set(points[2].x + poleWidth / 2 - poleWidth, heightArr[index] / 2 + currentHeight - heightArr[index], -(points[2].y - poleDepth / 2 + poleDepth));
+        } else if (shelf.direction === 'horizontal') {
+          // x轴最后不 - poleWidth 为预留柱子宽，不占用货架总宽。
+          poleMeshbackend.position.set(points[2].x + poleWidth / 2, heightArr[index] / 2 + currentHeight - heightArr[index], -(points[2].y - poleDepth / 2));
+        } else {
+          poleMeshbackend.position.set(points[2].x + poleWidth / 2 - poleWidth, heightArr[index] / 2 + currentHeight - heightArr[index], -(points[2].y - poleDepth / 2));
+        }
+      }
 
       levelGroup.add(poleMeshfront);
       levelGroup.add(poleMeshbackend);
 
       levelGroup.userData = {
-        type: 'ShelfLevel',
+        type: Type.SHELF_LEVEL,
         coordinate: { y: currentHeight },
         level: index + 1 // 从 1 开始
       };
@@ -390,15 +400,21 @@ export class Map {
     if (geojson.type === 'Feature') {
       const feature: Feature = geojson;
       if (feature && feature.properties && feature.properties.type === 'stack') {
-        const height: any = feature.properties.height;
-        stack.id = feature.properties.id || stack.id;
-        stack.height = height || stack.height;
-        stack.shelfId = feature.properties.shelfId || stack.shelfId;
-        stack.shelfLevel = feature.properties.shelfLevel || stack.shelfLevel;
+        stack = { ...stack, ...feature.properties };
+        // 找到指定货架
+        const shelf = this.target(stack.shelfId, Type.SHELF);
+        if (!shelf) {
+          console.warn('找不到货架：[' + stack.shelfId + ']');
+          return;
+        }
+        // feature.properties.height -- 用户定义的库位高度
+        // shelf.userData.height[stack.shelfLevel - 1] -- 用户定义的库位对应的货架层高
+        // shelf.userData.height -- 用户定义的货架层高
+        // stack.height -- 默认的库位高度
+        stack.height = (feature.properties.height || shelf.userData.height[stack.shelfLevel - 1] || shelf.userData.height || stack.height) - this.config.surfaceHeight * 2;
 
         const geometry = feature.geometry;
-        const depth: any = feature.properties.height || 10;
-        if (geometry && geometry.type === 'Polygon') {
+        if (geometry && geometry.type === GeometryType.Polygon) {
           const polygon: Polygon = feature.geometry;
           let coordinates = polygon.coordinates;
           stack.vectors = [];
@@ -409,34 +425,31 @@ export class Map {
           })
           let shape = new THREE.Shape(stack.vectors);
           let stackGeo = new THREE.ExtrudeGeometry(shape, {
-            depth: depth,
+            depth: stack.height,
             bevelEnabled: false
           });
           let stackMat = new THREE.MeshLambertMaterial(this.theme.stack);
 
-          // 找到指定货架
-          const shelf = this.target(stack.shelfId, 'Shelf');
           let currentHeight = 0;
           if (shelf.userData.height instanceof Array) {
-            currentHeight += this.levelSurfaceDepth;
+            currentHeight += this.config.surfaceHeight;
             for (let index = 1; index < stack.shelfLevel; index++) {
               currentHeight += shelf.userData.height[index - 1];
             }
           } else {
-            currentHeight += this.levelSurfaceDepth;
+            currentHeight += this.config.surfaceHeight;
             for (let index = 1; index < stack.shelfLevel; index++) {
               currentHeight += shelf.userData.height;
             }
           }
           // 设置该库位对应货架的 y 轴位置（由货架每层高度计算得出）
-          const y = this.groundDepth + currentHeight;
+          const y = this.config.groundHeight + currentHeight;
 
           let stackMesh = new THREE.Mesh(stackGeo, stackMat);
           stackMesh.position.set(0, y, 0);
           stackMesh.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
 
           stackMesh.userData = {
-            type: 'Stack',
             ...stack,
             material: {
               ...this.theme.stack
@@ -462,12 +475,12 @@ export class Map {
     let area = new Area();
     if (geojson.type === 'Feature') {
       const feature: Feature = geojson;
-      if (feature && feature.properties && feature.properties.type === 'area') {
+      if (feature && feature.properties && feature.properties.type === Type.AREA) {
         area = { ...area, ...feature.properties };
 
         const geometry = feature.geometry;
         const depth: any = feature.properties.height || 10;
-        if (geometry && geometry.type === 'Polygon') {
+        if (geometry && geometry.type === GeometryType.Polygon) {
           const polygon: Polygon = feature.geometry;
           let coordinates = polygon.coordinates;
           area.vectors = [];
@@ -490,7 +503,6 @@ export class Map {
           areaMesh.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
 
           areaMesh.userData = {
-            type: 'Area',
             ...area,
             material: {
               ...style
@@ -578,7 +590,7 @@ export class Map {
           }
           break;
         }
-        if (selectedObj.userData.type === 'area') {
+        if (selectedObj.userData.type === Type.AREA) {
           this.fadeInAll();
           // 恢复为以前的颜色
           if (this.selectedMesh) {
@@ -600,7 +612,7 @@ export class Map {
    * 处理 Area, 显示/隐藏文字标注
    */
   handleAreaObj(selectedObj) {
-    if (selectedObj.userData.type !== 'area') {
+    if (selectedObj.userData.type !== Type.AREA) {
       return;
     }
     if (!selectedObj.userData.name) {
