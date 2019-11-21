@@ -33,7 +33,7 @@ export class Map {
    * 主题
    */
   theme: Theme;
-   /**
+  /**
    * 配置
    */
   config: WarehouseConfig = new WarehouseConfig();
@@ -146,7 +146,7 @@ export class Map {
     document.body.appendChild(this.stats.dom);
 
     // grid
-    var helper: any = new THREE.GridHelper(2000, 200); // 2000/200 一个格子的边长为 10
+    var helper: any = new THREE.GridHelper(2000 * this.config.coefficient, 200 * this.config.coefficient); // 2000/200 一个格子的边长为 10
     helper.position.set(0, 0, 0);
     helper.material.opacity = 0.25;
     helper.material.transparent = true;
@@ -165,7 +165,7 @@ export class Map {
     var loader = new THREE.FileLoader();
 
     loader.load('assets/json/all.json', (geojson: string) => {
-      this.warehouse = GeoJsonUtil.parse(geojson);
+      this.warehouse = GeoJsonUtil.parse(geojson, this.config);
 
       this.drawGround(960, 630, { x: 10, y: 10, z: 0 });
       this.drawArea(this.warehouse.areas);
@@ -194,11 +194,11 @@ export class Map {
     this.reDraw();
 
     let ground = new THREE.Shape()
-      .moveTo(point.x, point.y)
-      .lineTo(point.x, depth + point.y)
-      .lineTo(width + point.x, depth + point.y)
-      .lineTo(width + point.x, point.y)
-      .lineTo(point.x, point.y);
+      .moveTo(point.x * this.config.coefficient, point.y * this.config.coefficient)
+      .lineTo(point.x * this.config.coefficient, (depth + point.y) * this.config.coefficient)
+      .lineTo((width + point.x) * this.config.coefficient, (depth + point.y) * this.config.coefficient)
+      .lineTo((width + point.x) * this.config.coefficient, point.y * this.config.coefficient)
+      .lineTo(point.x * this.config.coefficient, point.y * this.config.coefficient);
 
     // 设置纹理
     // @reference https://threejs.org/docs/index.html#api/en/textures/Texture
@@ -321,6 +321,8 @@ export class Map {
       } else if (shelf.direction === 'horizontal') {
         poleWidth = shelf.pole.depth, poleDepth = shelf.width || shelf.pole.width;
       }
+      poleWidth = poleWidth * this.config.coefficient;
+      poleDepth = poleDepth * this.config.coefficient;
       let poleGeo = new THREE.BoxBufferGeometry(poleWidth, heightArr[index], poleDepth); // 长/高/宽
       let poleMat = new THREE.MeshLambertMaterial(this.theme.shelf.pole);
 

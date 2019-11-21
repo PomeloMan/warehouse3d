@@ -1,6 +1,10 @@
 export class WarehouseConfig {
 
   /**
+   * 系数，用来等比例放大模型。默认：1
+   */
+  coefficient: number = 2;
+  /**
    * 广场高度
    */
   groundHeight: number = 2;
