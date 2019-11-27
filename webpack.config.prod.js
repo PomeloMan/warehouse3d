@@ -1,3 +1,4 @@
+const webpack = require('webpack');
 const merge = require('webpack-merge');
 const config = require('./webpack.config.js');
 const MinifyPlugin = require('babel-minify-webpack-plugin');
@@ -24,6 +25,9 @@ module.exports = merge(config, {
   },
   plugins: [
     new CleanWebpackPlugin(),
+    new webpack.DefinePlugin({
+      BASE_URL: JSON.stringify('http://localhost:9000/')
+    })
     // new MiniCssExtractPlugin({
     //   filename: 'styles.css',
     //   chunkFilename: '[chunkhash].css'

@@ -1,3 +1,4 @@
+const webpack = require('webpack');
 const path = require('path');
 const merge = require('webpack-merge');
 const common = require('./webpack.config.js');
@@ -16,9 +17,13 @@ module.exports = merge(common, {
     compress: true,
     historyApiFallback: true,
     inline: true,
-    hot: true
+    hot: true,
+    port: 9000
   },
   plugins: [
-    new CleanWebpackPlugin()
+    new CleanWebpackPlugin(),
+    new webpack.DefinePlugin({
+      BASE_URL: JSON.stringify('http://localhost:9000/')
+    })
   ]
 });
